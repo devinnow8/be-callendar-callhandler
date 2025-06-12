@@ -1,0 +1,27 @@
+name: Deploy to AWS EC2
+on:
+  push:
+    branches:
+      - dev  # Runs only when code is pushed to the main branch
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+    - name: Deploy to AWS EC2
+      env:
+        PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+        HOST: ${{ secrets.EC2_HOST }}
+        USER: ${{ secrets.EC2_USER }}
+      run: |
+        echo "$PRIVATE_KEY" > private_key.pem
+        chmod 600 private_key.pem
+        ssh -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST << 'EOF'
+          cd /home/ubuntu/callendar-backend
+          git pull origin dev
+          source env/bin/activate  # Activate Virtual Environment (if using one)
+          pip3 install -r requirements.txt
+          sudo systemctl restart nginx  # Restart the service (if using systemd)
+          sudo systemctl restart gunicorn.socket  # Restart the service (if using systemd)
+        EOF

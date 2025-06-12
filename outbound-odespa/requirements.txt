@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+python-dotenv
+plivo
+pydantic
+elevenlabs
+supabase
+sqlmodel
+psycopg2
