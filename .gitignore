@@ -1,2 +1,8 @@
+**/__pycache__/
+*.pyc
+*.pyo
+node_modules
+webhooks/src/api/v1/__pycache__/*
+webhooks/__pycache__/*
 env/
 .env
